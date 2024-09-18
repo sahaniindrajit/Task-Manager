@@ -9,31 +9,32 @@ import { cookies } from 'next/headers'
 const prisma = new PrismaClient().$extends(withAccelerate())
 
 export async function POST(req: NextRequest) {
-    try {
-        const body = await req.json()
-        const userData = UserSchema.parse(body)
+    const body = await req.json()
+    const userData = UserSchema.safeParse(body)
 
-        if (!userData) {
-            return NextResponse.json({
-                msg: "Invalid data type"
-            }, { status: 200 });
-        }
+    if (!userData.success) {
+        return NextResponse.json({
+            msg: "Invalid data type"
+        }, { status: 400 });
+    }
+
+    try {
 
         const user = await prisma.user.findFirst({
             where: {
-                email: userData.email
+                email: userData.data.email
             }
         })
         if (user) {
             return NextResponse.json({
                 msg: "User already exists/Try logging in"
-            }, { status: 200 });
+            }, { status: 400 });
         }
-        const hash = await bycrpt.hash(userData.password, 10);
+        const hash = await bycrpt.hash(userData.data.password, 10);
 
         const createUser = await prisma.user.create({
             data: {
-                email: userData.email,
+                email: userData.data.email,
                 password: hash
             }
         })
