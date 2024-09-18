@@ -19,32 +19,29 @@ export async function POST(req: NextRequest) {
             }, { status: 200 });
         }
 
-        const user = await prisma.user.findFirst({
+        const user = await prisma.user.findUnique({
             where: {
                 email: userData.email
             }
         })
-        if (user) {
+        if (!user) {
             return NextResponse.json({
-                msg: "User already exists/Try logging in"
+                msg: "User doesn't exists/Try creating account "
             }, { status: 200 });
         }
-        const hash = await bycrpt.hash(userData.password, 10);
 
-        const createUser = await prisma.user.create({
-            data: {
-                email: userData.email,
-                password: hash
-            }
-        })
-
+        const passwordVerify = await bycrpt.compare(userData.password, user.password);
+        if (!passwordVerify) {
+            return NextResponse.json({
+                msg: "Invalid Password"
+            }, { status: 200 });
+        }
         const payLoad = {
-            username: createUser.email,
-            userID: createUser.id
+            username: user.email,
+            userID: user.id
 
         }
         const secert = process.env.NEXT_PUBLIC_JWT_PASSWORD
-
         const token = jwt.sign(payLoad, secert);
 
         cookies().set({
@@ -54,7 +51,7 @@ export async function POST(req: NextRequest) {
             path: '/',
         })
         return NextResponse.json({
-            msg: "User created succesfully"
+            msg: "Login succesfully"
         });
     } catch (err) {
         console.error('Error:', err);
