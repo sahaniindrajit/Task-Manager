@@ -1,8 +1,9 @@
+import TaskCard from '@/components/taskCard'
 import React from 'react'
 
 function Dashboard() {
     return (
-        <div>Dashboard</div>
+        <div>hid</div>
     )
 }
 
