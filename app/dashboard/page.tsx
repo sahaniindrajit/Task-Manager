@@ -5,11 +5,14 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ListIcon, LayoutIcon, MenuIcon, LogOut } from "lucide-react";
+import { Input } from "@/components/ui/input"
+import { ListIcon, LayoutIcon, MenuIcon, LogOut, Search, Filter } from "lucide-react";
 import logout from "@/actions/logout";
 import TaskCard from '@/components/taskCard';
 import AddTaskCard from '@/components/addTaskCard';
-import getTask from '@/actions/getTask';
+import UseTask from '@/custom Hooks/UseTask';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
 
 
 export default function Dashboard() {
@@ -88,15 +91,9 @@ export default function Dashboard() {
 function KanbanBoard() {
     return (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <KanbanColumn title="To Do" color="bg-yellow-100" content={<TaskCard
-                title="Complete Project"
-                description="Finish up the remaining tasks"
-                progress="TODO"
-                priority="HIGH"
-                dueDate={new Date('2024-09-30')}
-            />} />
-            <KanbanColumn title="In Progress" color="bg-blue-100" />
-            <KanbanColumn title="Done" color="bg-green-100" />
+            <KanbanColumn title="To Do" color="bg-yellow-100" content={<UseTask />} />
+            <KanbanColumn title="In Progress" color="bg-blue-100" content={<UseTask />} />
+            <KanbanColumn title="Done" color="bg-green-100" content={<UseTask />} />
 
         </div>
     );
@@ -116,13 +113,99 @@ function KanbanColumn({ title, color, content }) {
 }
 
 function ListView() {
+    const [searchQuery, setSearchQuery] = useState("")
+    const [filters, setFilters] = useState({
+        progress: {
+            TODO: false,
+            IN_PROGRESS: false,
+            DONE: false,
+        },
+        priority: {
+            LOW: false,
+            MEDIUM: false,
+            HIGH: false,
+        },
+    })
+
+    const handleFilterChange = (category, value) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [category]: {
+                ...prevFilters[category],
+                [value]: !prevFilters[category][value],
+            },
+        }))
+    }
+
     return (
-        <TaskCard
-            title="Complete Project"
-            description="Finish up the remaining tasks"
-            progress="TODO"
-            priority="HIGH"
-            dueDate={new Date('2024-09-30')}
-        />
-    );
+        <Card>
+            <CardHeader>
+                <div className="flex items-center justify-between">
+                    <CardTitle>Task List</CardTitle>
+                    <div className="flex items-center space-x-2">
+                        <div className="relative">
+                            <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                            <Input
+                                className="pl-8"
+                                placeholder="Search tasks..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" size="icon">
+                                    <Filter className="h-4 w-4" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <div className="grid gap-4">
+                                    <h4 className="font-medium leading-none">Filter Tasks</h4>
+                                    <div className="grid gap-2">
+                                        <h5 className="text-sm font-medium leading-none">Progress</h5>
+                                        {Object.entries(filters.progress).map(([key, value]) => (
+                                            <div key={key} className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id={`progress-${key}`}
+                                                    checked={value}
+                                                    onCheckedChange={() => handleFilterChange("progress", key)}
+                                                />
+                                                <label htmlFor={`progress-${key}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                    {key.replace("_", " ")}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <h5 className="text-sm font-medium leading-none">Priority</h5>
+                                        {Object.entries(filters.priority).map(([key, value]) => (
+                                            <div key={key} className="flex items-center space-x-2">
+                                                <Checkbox
+                                                    id={`priority-${key}`}
+                                                    checked={value}
+                                                    onCheckedChange={() => handleFilterChange("priority", key)}
+                                                />
+                                                <label htmlFor={`priority-${key}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                    {key}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <TaskCard
+                    title="Complete Project"
+                    description="Finish up the remaining tasks"
+                    status="TODO"
+                    priority="HIGH"
+                    dueDate={new Date('2024-09-30')}
+                />
+            </CardContent>
+        </Card>
+    )
 }

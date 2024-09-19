@@ -19,11 +19,6 @@ export default function AddTaskCard() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(title);
-        console.log(description);
-        console.log(status);
-        console.log(priority);
-        console.log(dueDate);
         setOpen(false);
     };
 

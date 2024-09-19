@@ -6,15 +6,15 @@ import { Circle, Edit, Trash2 } from "lucide-react";
 interface TaskCardProps {
     title: string;
     description: string;
-    progress: "TODO" | "IN_PROGRESS" | "DONE";
+    status: "TODO" | "IN_PROGRESS" | "DONE";
     priority: "LOW" | "MEDIUM" | "HIGH";
-    dueDate: Date;
+    dueDate: Date | null;
 }
 
 export default function TaskCard({
     title,
     description,
-    progress,
+    status,
     priority,
     dueDate,
 }: TaskCardProps) {
@@ -31,9 +31,13 @@ export default function TaskCard({
         DONE: "bg-green-500"
     };
 
-    const formatDate = (date: Date) => {
+    const formatDate = (date: Date | null) => {
+        if (!date || !(date instanceof Date)) {
+            return "Not yet due";
+        }
         return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     };
+
 
     return (
         <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto my-4 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
@@ -41,9 +45,9 @@ export default function TaskCard({
                 <CardTitle className="text-lg font-semibold text-gray-900">{title}</CardTitle>
                 <Badge
                     variant="outline"
-                    className={`text-white ${progressColors[progress]} capitalize px-2 py-1`}
+                    className={`text-white ${progressColors[status]} capitalize px-2 py-1`}
                 >
-                    {progress}
+                    {status}
                 </Badge>
             </CardHeader>
             <CardContent className="space-y-2">
