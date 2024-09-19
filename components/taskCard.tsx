@@ -8,7 +8,7 @@ interface TaskCardProps {
     description: string;
     status: "TODO" | "IN_PROGRESS" | "DONE";
     priority: "LOW" | "MEDIUM" | "HIGH";
-    dueDate: Date | null;
+    dueDate: string;
 }
 
 export default function TaskCard({
@@ -29,13 +29,6 @@ export default function TaskCard({
         TODO: "bg-gray-500",
         IN_PROGRESS: "bg-blue-500",
         DONE: "bg-green-500"
-    };
-
-    const formatDate = (date: Date | null) => {
-        if (!date || !(date instanceof Date)) {
-            return "Not yet due";
-        }
-        return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     };
 
 
@@ -59,7 +52,7 @@ export default function TaskCard({
                     </Badge>
                     <Badge variant="outline" className="flex items-center space-x-2">
                         <Circle className="h-2 w-2 bg-gray-500" />
-                        <span className="text-sm">Due {formatDate(dueDate)}</span>
+                        <span className="text-sm">Due {dueDate}</span>
                     </Badge>
                 </div>
             </CardContent>

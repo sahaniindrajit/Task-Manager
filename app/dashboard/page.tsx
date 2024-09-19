@@ -91,9 +91,9 @@ export default function Dashboard() {
 function KanbanBoard() {
     return (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <KanbanColumn title="To Do" color="bg-yellow-100" content={<UseTask />} />
-            <KanbanColumn title="In Progress" color="bg-blue-100" content={<UseTask />} />
-            <KanbanColumn title="Done" color="bg-green-100" content={<UseTask />} />
+            <KanbanColumn title="To Do" color="bg-yellow-100" content={<UseTask status='TODO' />} />
+            <KanbanColumn title="In Progress" color="bg-blue-100" content={<UseTask status='IN_PROGRESS' />} />
+            <KanbanColumn title="Done" color="bg-green-100" content={<UseTask status='DONE' />} />
 
         </div>
     );

@@ -6,6 +6,7 @@ import { CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import axios from "axios";
 
 export default function AddTaskCard() {
     const [open, setOpen] = useState(false);
@@ -16,9 +17,29 @@ export default function AddTaskCard() {
     const [dueDate, setDueDate] = useState('');
 
 
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        try {
+            // Create the task payload
+            const taskData = {
+                title,
+                description,
+                status,
+                priority
+            };
+
+            // Only include dueDate if it's provided
+            if (dueDate) {
+                taskData.dueDate = new Date(dueDate);
+            }
+
+            const response = await axios.post('http://localhost:3000/api/task', taskData);
+
+            console.log('Response:', response.data);
+            setOpen(false);
+        } catch (error) {
+            console.error('Error submitting task:', error);
+        }
         setOpen(false);
     };
 

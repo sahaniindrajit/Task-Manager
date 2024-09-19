@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     if (!taskData.success) {
         return NextResponse.json({
             msg: "Invalid data type"
-        }, { status: 200 });
+        }, { status: 400 });
     }
     let userId: string;
     try {

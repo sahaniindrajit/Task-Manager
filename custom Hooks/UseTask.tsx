@@ -7,13 +7,15 @@ interface Task {
     description: string;
     status: "TODO" | "IN_PROGRESS" | "DONE";
     priority: "LOW" | "MEDIUM" | "HIGH";
-    dueDate: Date | null;
+    dueDate: string;
 }
 
-export default function UseTask() {
-    const [tasks, setTasks] = useState<Task[]>([
-        { title: '', description: '', status: "TODO", priority: "LOW", dueDate: null }
-    ]);
+interface UseTaskProps {
+    status: "TODO" | "IN_PROGRESS" | "DONE";
+}
+
+export default function UseTask({ status }: UseTaskProps) {
+    const [tasks, setTasks] = useState<Task[]>([]);
 
     useEffect(() => {
         async function fetchTasks() {
@@ -25,7 +27,7 @@ export default function UseTask() {
                     description: task.description ?? "",
                     status: task.status,
                     priority: task.priority,
-                    dueDate: task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "",
+                    dueDate: new Date(task.dueDate).toLocaleDateString("en-US"),
                 }));
 
                 setTasks(allTasks);
@@ -37,10 +39,13 @@ export default function UseTask() {
         fetchTasks();
     }, []);
 
+    // Filter tasks based on the status prop
+    const filteredTasks = tasks.filter(task => task.status === status);
+
     return (
         <div>
             <ul>
-                {tasks.map((task, index) => (
+                {filteredTasks.map((task, index) => (
                     <li key={index}>
                         <TaskCard
                             title={task.title}
@@ -50,7 +55,6 @@ export default function UseTask() {
                             dueDate={task.dueDate}
                         />
                     </li>
-
                 ))}
             </ul>
         </div>
