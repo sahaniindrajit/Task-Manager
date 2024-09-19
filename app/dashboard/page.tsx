@@ -1,15 +1,17 @@
 "use client"; // Ensure this is at the top
 
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ListIcon, LayoutIcon, MenuIcon } from "lucide-react";
+import { ListIcon, LayoutIcon, MenuIcon, LogOut } from "lucide-react";
+import logout from "@/actions/logout";
 
 export default function Dashboard() {
     const [view, setView] = useState("kanban");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+    const router = useRouter();
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
@@ -42,6 +44,17 @@ export default function Dashboard() {
                         >
                             <LayoutIcon className="mr-2 h-4 w-4" />
                             Kanban Board
+                        </Button>
+                        <Button
+                            variant={view === "logout" ? "default" : "ghost"}
+                            className={`w-full justify-start text-gray-600 hover:text-gray-900`}
+                            onClick={async () => {
+                                await logout();
+                                router.push('/')
+                            }}
+                        >
+                            <LogOut className="mr-2 h-4 w-4" />
+                            logout
                         </Button>
                     </nav>
                 </div>
