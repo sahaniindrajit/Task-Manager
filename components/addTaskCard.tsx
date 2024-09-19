@@ -9,10 +9,21 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 export default function AddTaskCard() {
     const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [status, setStatus] = useState('');
+    const [priority, setPriority] = useState('');
+    const [dueDate, setDueDate] = useState('');
+
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Handle form submission here
+        console.log(title);
+        console.log(description);
+        console.log(status);
+        console.log(priority);
+        console.log(dueDate);
         setOpen(false);
     };
 
@@ -32,15 +43,15 @@ export default function AddTaskCard() {
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
                             <label htmlFor="title">Title</label>
-                            <Input id="title" placeholder="Enter task title" />
+                            <Input id="title" placeholder="Enter task title" onChange={(e) => setTitle(e.target.value)} />
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="description">Description</label>
-                            <Textarea id="description" placeholder="Enter task description" />
+                            <Textarea id="description" placeholder="Enter task description" onChange={(e) => setDescription(e.target.value)} />
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="status">Status</label>
-                            <Select>
+                            <Select onValueChange={(value) => setStatus(value)}>
                                 <SelectTrigger id="status">
                                     <SelectValue placeholder="Select status" />
                                 </SelectTrigger>
@@ -53,7 +64,7 @@ export default function AddTaskCard() {
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="priority">Priority</label>
-                            <Select>
+                            <Select onValueChange={(value) => setPriority(value)}>
                                 <SelectTrigger id="priority">
                                     <SelectValue placeholder="Select priority" />
                                 </SelectTrigger>
@@ -66,7 +77,7 @@ export default function AddTaskCard() {
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="dueDate">Due Date</label>
-                            <Input id="dueDate" type="date" />
+                            <Input id="dueDate" type="date" onChange={(e) => setDueDate(e.target.value)} />
                         </div>
                     </div>
                     <CardFooter className="justify-end space-x-2">
