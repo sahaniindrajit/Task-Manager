@@ -27,14 +27,14 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json({
                 msg: "User doesn't exists/Try creating account "
-            }, { status: 400 });
+            }, { status: 401 });
         }
 
         const passwordVerify = await bycrpt.compare(userData.data.password, user.password);
         if (!passwordVerify) {
             return NextResponse.json({
                 msg: "Invalid Password"
-            }, { status: 400 });
+            }, { status: 401 });
         }
         const payLoad = {
             username: user.email,

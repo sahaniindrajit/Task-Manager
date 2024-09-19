@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Signin from "@/actions/signin";
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
     const router = useRouter();
@@ -20,7 +20,7 @@ export default function SignIn() {
             if (response.success) {
                 router.push('/dashboard');
             } else {
-                console.log('Sign-in failed', response.error);
+                console.log('Sign-in failed');
             }
         } catch (error) {
             console.error('Sign-in error', error);

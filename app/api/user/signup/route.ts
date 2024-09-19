@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         if (user) {
             return NextResponse.json({
                 msg: "User already exists/Try logging in"
-            }, { status: 400 });
+            }, { status: 401 });
         }
         const hash = await bycrpt.hash(userData.data.password, 10);
 
