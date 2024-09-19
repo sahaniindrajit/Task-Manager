@@ -9,8 +9,11 @@ import { ListIcon, LayoutIcon, MenuIcon, LogOut } from "lucide-react";
 import logout from "@/actions/logout";
 import TaskCard from '@/components/taskCard';
 import AddTaskCard from '@/components/addTaskCard';
+import getTask from '@/actions/getTask';
+
 
 export default function Dashboard() {
+
     const [view, setView] = useState("kanban");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const router = useRouter();
@@ -66,6 +69,7 @@ export default function Dashboard() {
                     <Button variant="ghost" size="icon" onClick={toggleSidebar} className="lg:hidden">
                         <MenuIcon className="h-6 w-6 text-gray-900" />
                     </Button>
+
                     <h2 className="text-xl font-semibold text-gray-900">{view === "kanban" ? "Kanban Board" : "List View"}</h2>
                     <div className="flex items-center space-x-2">
                         <AddTaskCard />
@@ -93,6 +97,7 @@ function KanbanBoard() {
             />} />
             <KanbanColumn title="In Progress" color="bg-blue-100" />
             <KanbanColumn title="Done" color="bg-green-100" />
+
         </div>
     );
 }

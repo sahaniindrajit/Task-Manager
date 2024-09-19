@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { TaskSchema } from '@/zod/userTaskType';
-import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+import gettoken from '@/actions/verifyToken';
 
 const prisma = new PrismaClient().$extends(withAccelerate())
 
@@ -15,21 +14,21 @@ export async function POST(req: NextRequest) {
             msg: "Invalid data type"
         }, { status: 200 });
     }
+    let userId: string;
+    try {
+        userId = await gettoken();
+    } catch (err) {
+        return NextResponse.json({
+            msg: "Not a valid form of token",
+            error: err.message
+        }, { status: 400 });
+    }
 
-    const userData = cookies().get('access_token')
-    if (!userData) {
+    if (!userId) {
         return NextResponse.json({
-            msg: "Not valid form of token"
-        }, { status: 400 });
+            msg: "User not authenticated"
+        }, { status: 401 });
     }
-    const secert = process.env.NEXT_PUBLIC_JWT_PASSWORD
-    const decoded = jwt.verify(userData.value, secert);
-    if (!decoded) {
-        return NextResponse.json({
-            msg: "Not verified user"
-        }, { status: 400 });
-    }
-    const userId = decoded.userID;
 
     try {
         const task = await prisma.task.create({
@@ -39,7 +38,7 @@ export async function POST(req: NextRequest) {
                 status: taskData.data.status,
                 priority: taskData.data.priority,
                 dueDate: taskData.data.dueDate,
-                userId: userId,
+                userId: userId
             }
         })
         return NextResponse.json({
