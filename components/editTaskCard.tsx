@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useRecoilState } from 'recoil';
 import { tasksState, Task } from '@/state/taskAtom';
 import editTask from '@/actions/editTask';
+import { Loader2 } from "lucide-react";
 
 interface EditTaskCardProps {
     task: Task;
@@ -22,6 +23,7 @@ export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
     const [status, setStatus] = useState(task.status);
     const [priority, setPriority] = useState(task.priority);
     const [dueDate, setDueDate] = useState(task.dueDate || '');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [tasks, setTasks] = useRecoilState(tasksState);
 
@@ -35,6 +37,8 @@ export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
     }, [task]);
 
     const handleSubmit = async (event) => {
+        setIsLoading(true);
+
         event.preventDefault();
         try {
             const taskData = {
@@ -63,6 +67,8 @@ export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
             setOpen(false);
         } catch (error) {
             console.error('Error updating task:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -124,7 +130,22 @@ export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
                         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit">Update Task</Button>
+                        <Button
+                            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600  dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] flex items-center justify-center"
+                            type="submit"
+                            variant="ghost"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Adding...
+
+                                </div>
+                            ) : (
+                                "Add Task →"
+                            )}
+                        </Button>
                     </CardFooter>
                 </form>
             </DialogContent>

@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useRecoilState } from 'recoil';
 import { tasksState, Task } from '@/state/taskAtom';
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import axios from 'axios';
+
 export default function AddTaskCard() {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
@@ -16,11 +18,14 @@ export default function AddTaskCard() {
     const [status, setStatus] = useState('');
     const [priority, setPriority] = useState('');
     const [dueDate, setDueDate] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const [tasks, setTasks] = useRecoilState(tasksState);
 
     const handleSubmit = async (event) => {
+        setIsLoading(true);
+
         event.preventDefault();
         try {
             // Task data
@@ -49,6 +54,8 @@ export default function AddTaskCard() {
 
         } catch (error) {
             console.error('Error submitting task:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -110,7 +117,22 @@ export default function AddTaskCard() {
                         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit">Add Task</Button>
+                        <Button
+                            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600  dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] flex items-center justify-center"
+                            type="submit"
+                            variant="ghost"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Adding...
+
+                                </div>
+                            ) : (
+                                "Add Task →"
+                            )}
+                        </Button>
                     </CardFooter>
                 </form>
             </DialogContent>

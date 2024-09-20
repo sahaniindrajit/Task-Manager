@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Circle, Trash2 } from "lucide-react";
 import deleteTask from "@/actions/deleteTask";
 import EditTaskCard from "./editTaskCard";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 interface TaskCardProps {
     id: string;
@@ -24,11 +26,13 @@ export default function TaskCard({
     status,
     priority,
     dueDate,
-}: TaskCardProps) {
+}: TaskCardProps, setActiveCard) {
     const [tasks, setTasks] = useRecoilState(tasksState);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async () => {
         try {
+            setIsLoading(true);
             const result = await deleteTask(id);
             if (result.error) {
                 throw new Error(result.error);
@@ -36,6 +40,8 @@ export default function TaskCard({
             setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
         } catch (error) {
             console.error('Error deleting task:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -58,42 +64,56 @@ export default function TaskCard({
     };
 
     return (
-        <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto my-4 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
-            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
-                <CardTitle className="text-lg font-semibold text-gray-900">{title}</CardTitle>
-                <Badge
-                    variant="outline"
-                    className={`text-white ${progressColors[status]} capitalize px-2 py-1`}
-                >
-                    {status}
-                </Badge>
-            </CardHeader>
-            <CardContent className="space-y-2">
-                <p className="text-sm text-gray-700 mb-2">{description}</p>
-                <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center space-y-2 sm:space-y-0">
-                    <Badge variant="outline" className="flex items-center space-x-2">
-                        <Circle className={`h-2 w-2 ${priorityColors[priority]}`} />
-                        <span className="text-sm">{priority}</span>
+        <>
+            <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto my-4 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out" draggable onDragStart={() => setActiveCard(id)} onDragEnd={() => setActiveCard(null)}>
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
+                    <CardTitle className="text-lg font-semibold text-gray-900">{title}</CardTitle>
+                    <Badge
+                        variant="outline"
+                        className={`text-white ${progressColors[status]} capitalize px-2 py-1`}
+                    >
+                        {status}
                     </Badge>
-                    <Badge variant="outline" className="flex items-center space-x-2">
-                        <Circle className="h-2 w-2 bg-gray-500" />
-                        <span className="text-sm">Due {dueDate}</span>
-                    </Badge>
-                </div>
-            </CardContent>
-            <div className="flex justify-end space-x-2 p-2">
-                <EditTaskCard task={{ id, title, description, status, priority, dueDate }} onEdit={handleEdit} />
+                </CardHeader>
+                <CardContent className="space-y-2">
+                    <p className="text-sm text-gray-700 mb-2">{description}</p>
+                    <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center space-y-2 sm:space-y-0">
+                        <Badge variant="outline" className="flex items-center space-x-2">
+                            <Circle className={`h-2 w-2 ${priorityColors[priority]}`} />
+                            <span className="text-sm">{priority}</span>
+                        </Badge>
+                        <Badge variant="outline" className="flex items-center space-x-2">
+                            <Circle className="h-2 w-2 bg-gray-500" />
+                            <span className="text-sm">Due {dueDate}</span>
+                        </Badge>
+                    </div>
+                </CardContent>
+                <div className="flex justify-end space-x-2 p-2">
+                    <EditTaskCard task={{ id, title, description, status, priority, dueDate }} onEdit={handleEdit} />
 
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center"
-                    onClick={handleDelete}
-                >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
-                </Button>
-            </div>
-        </Card>
+                    <Button
+                        className="flex items-center"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDelete}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <div className="flex items-center justify-center">
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Deleting...
+
+                            </div>
+                        ) : (
+                            <>
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete Task
+                            </>
+                        )}
+                    </Button>
+                </div>
+            </Card>
+
+        </>
     );
 }

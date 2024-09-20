@@ -49,5 +49,5 @@ export default function UseTask() {
 
         fetchTasks();
     }, []);
-
+    return true;
 }
