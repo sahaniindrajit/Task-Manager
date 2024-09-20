@@ -4,6 +4,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { tasksState } from "@/state/taskAtom";
 
 interface Task {
+    id: string;
     title: string;
     description: string;
     status: "TODO" | "IN_PROGRESS" | "DONE";
@@ -25,6 +26,7 @@ export default function UseTask() {
                 const allTasks = await getTask();
 
                 const formattedTasks = allTasks.map((task: Task) => ({
+                    id: task.id,
                     title: task.title,
                     description: task.description ?? "",
                     status: task.status,

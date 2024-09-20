@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Circle, Edit, Trash2 } from "lucide-react";
+import deleteTask from "@/actions/deleteTask";
 
 interface TaskCardProps {
     id: string;
@@ -25,8 +26,21 @@ export default function TaskCard({
 }: TaskCardProps) {
     const [tasks, setTasks] = useRecoilState(tasksState);
 
-    const handleDelete = () => {
-        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    const handleDelete = async () => {
+        try {
+            // Call the server function to delete the task
+            const result = await deleteTask(id);
+
+            if (result.error) {
+                throw new Error(result.error);
+            }
+
+
+            setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+        } catch (error) {
+            console.error('Error deleting task:', error);
+
+        }
     };
 
     const priorityColors = {
