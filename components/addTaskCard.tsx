@@ -37,16 +37,16 @@ export default function AddTaskCard() {
 
             const newTask: Task = response.data; // Response from the server (newly created task)
 
-            // Update Recoil state with new task
+
             setTasks([...tasks, newTask]);
 
-            // Close dialog and reset form
-            setOpen(false);
             setTitle('');
             setDescription('');
             setStatus('');
             setPriority('');
             setDueDate('');
+            setOpen(false);
+
         } catch (error) {
             console.error('Error submitting task:', error);
         }
