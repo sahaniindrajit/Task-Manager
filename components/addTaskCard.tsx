@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useRecoilState } from 'recoil';
 import { tasksState, Task } from '@/state/taskAtom';
 import axios from 'axios';
-
 export default function AddTaskCard() {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState('');
@@ -24,34 +23,30 @@ export default function AddTaskCard() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const parsedDueDate = dueDate ? new Date(dueDate).toISOString() : null;
+            // Task data
             const taskData = {
                 title,
                 description,
                 status,
-                priority
+                priority,
+                ...(dueDate && { dueDate: new Date(dueDate).toISOString() }) // Only include dueDate if provided
             };
 
-            if (dueDate) {
-                taskData.dueDate = new Date(dueDate);
-            }
-
-
+            // Post the new task data to your API
             const response = await axios.post('http://localhost:3000/api/task', taskData);
 
-            const newTask: Task = response.data;
+            const newTask: Task = response.data; // Response from the server (newly created task)
 
-
+            // Update Recoil state with new task
             setTasks([...tasks, newTask]);
 
+            // Close dialog and reset form
             setOpen(false);
             setTitle('');
             setDescription('');
             setStatus('');
             setPriority('');
             setDueDate('');
-            console.log(tasks)
-
         } catch (error) {
             console.error('Error submitting task:', error);
         }
@@ -110,8 +105,9 @@ export default function AddTaskCard() {
                             <Input id="dueDate" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
                         </div>
                     </div>
+
                     <CardFooter className="justify-end space-x-2">
-                        <Button variant="ghost" onClick={() => setOpen(false)}>
+                        <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                             Cancel
                         </Button>
                         <Button type="submit">Add Task</Button>

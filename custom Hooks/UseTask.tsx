@@ -1,6 +1,7 @@
 import getTask from "@/actions/getTask";
-import TaskCard from "@/components/taskCard";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { tasksState } from "@/state/taskAtom";
 
 interface Task {
     title: string;
@@ -15,49 +16,36 @@ interface UseTaskProps {
     status: "TODO" | "IN_PROGRESS" | "DONE";
 }
 
-export default function UseTask({ status, refresh }: UseTaskProps) {
-    const [tasks, setTasks] = useState<Task[]>([]);
+export default function UseTask() {
+    const [tasks, setTasks] = useRecoilState(tasksState); // Using Recoil state instead of local state
 
     useEffect(() => {
         async function fetchTasks() {
             try {
-                const response = await getTask();
+                const allTasks = await getTask();
 
-                const allTasks = response.map((task) => ({
+                const formattedTasks = allTasks.map((task: Task) => ({
                     title: task.title,
                     description: task.description ?? "",
                     status: task.status,
                     priority: task.priority,
-                    dueDate: new Date(task.dueDate).toLocaleDateString("en-US"),
+                    dueDate: task.dueDate
+                        ? new Date(task.dueDate).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                        })
+                        : "Not due",
                 }));
 
-                setTasks(allTasks);
+
+                setTasks(formattedTasks); // Set tasks in Recoil state
             } catch (error) {
-                console.error('Error fetching tasks:', error);
+                console.error("Error fetching tasks:", error);
             }
         }
 
         fetchTasks();
-    }, [refresh]);
+    }, []);
 
-    // Filter tasks based on the status prop
-    const filteredTasks = tasks.filter(task => task.status === status);
-
-    return (
-        <div>
-            <ul>
-                {filteredTasks.map((task, index) => (
-                    <li key={index}>
-                        <TaskCard
-                            title={task.title}
-                            description={task.description}
-                            status={task.status}
-                            priority={task.priority}
-                            dueDate={task.dueDate}
-                        />
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
 }

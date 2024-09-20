@@ -1,9 +1,11 @@
 import { useRecoilValue } from "recoil";
-import { filteredTaskList } from "@/state/taskState";
+import { filteredTaskList } from "@/state/taskAtom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TaskCard from '@/components/taskCard';
+import UseTask from "@/custom Hooks/UseTask";
 
 export default function KanbanBoard() {
+    const random = UseTask()
     const tasksByStatus = useRecoilValue(filteredTaskList);
 
     return (

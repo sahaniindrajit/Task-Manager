@@ -1,7 +1,7 @@
 'use client';
 
 import { useRecoilState } from 'recoil';
-import { taskState } from '@/state/taskAtom';
+import { tasksState } from '@/state/taskAtom';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,23 +26,7 @@ export default function ListView() {
         },
     });
 
-    // Use Recoil to manage the task state globally
-    const [tasks, setTasks] = useRecoilState(taskState);
-
-    // Example function to add a new task
-    const addTask = () => {
-        setTasks((oldTasks) => [
-            ...oldTasks,
-            {
-                id: `task-${oldTasks.length + 1}`,
-                title: "New Task",
-                description: "Description of the new task",
-                status: "TODO",
-                priority: "LOW",
-                dueDate: '2024-09-30',
-            },
-        ]);
-    };
+    const [tasks, setTasks] = useRecoilState(tasksState);
 
     const handleFilterChange = (category, value) => {
         setFilters((prevFilters) => ({
@@ -132,7 +116,7 @@ export default function ListView() {
                 </div>
             </CardHeader>
             <CardContent>
-                <Button onClick={addTask}>Add Task</Button>
+
                 {filteredTasks.length > 0 ? (
                     filteredTasks.map((task) => (
                         <TaskCard

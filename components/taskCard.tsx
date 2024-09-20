@@ -1,6 +1,6 @@
 'use client';
 import { useRecoilState } from "recoil";
-import { taskListState } from "@/state/taskState";
+import { tasksState } from "@/state/taskAtom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,7 @@ export default function TaskCard({
     priority,
     dueDate,
 }: TaskCardProps) {
-    const [tasks, setTasks] = useRecoilState(taskListState);
+    const [tasks, setTasks] = useRecoilState(tasksState);
 
     const handleDelete = () => {
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
@@ -61,7 +61,7 @@ export default function TaskCard({
                     </Badge>
                     <Badge variant="outline" className="flex items-center space-x-2">
                         <Circle className="h-2 w-2 bg-gray-500" />
-                        <span className="text-sm">Due {dueDate}</span>
+                        <span className="text-sm"> {dueDate}</span>
                     </Badge>
                 </div>
             </CardContent>
