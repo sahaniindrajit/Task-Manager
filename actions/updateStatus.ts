@@ -1,10 +1,8 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
-import { withAccelerate } from '@prisma/extension-accelerate';
 import gettoken from './verifyToken';
+import prisma from '@/db';
 
-const prisma = new PrismaClient().$extends(withAccelerate());
 
 interface TaskData {
     status: "TODO" | "IN_PROGRESS" | "DONE";

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client'
-import { withAccelerate } from '@prisma/extension-accelerate'
 import { TaskSchema } from '@/zod/userTaskType';
 import gettoken from '@/actions/verifyToken';
+import prisma from '@/db';
 
-const prisma = new PrismaClient().$extends(withAccelerate())
 
 export async function POST(req: NextRequest) {
     const body = await req.json()

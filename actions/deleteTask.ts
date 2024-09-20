@@ -1,10 +1,7 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
-import { withAccelerate } from '@prisma/extension-accelerate';
 import gettoken from './verifyToken';
-
-const prisma = new PrismaClient().$extends(withAccelerate());
+import prisma from '@/db';
 
 export default async function deleteTask(taskId) {
     try {
