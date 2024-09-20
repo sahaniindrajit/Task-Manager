@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Signin from "@/actions/signin";
 import { useRouter } from 'next/navigation';
+import BottomWarning from '@/components/bottomWarning'
 
 export default function SignIn() {
     const router = useRouter();
@@ -66,8 +67,11 @@ export default function SignIn() {
                             <BottomGradient />
                         </button>
                     </form>
+                    <BottomWarning label={"Don't have an account?"} buttonText={"Signup"} to={'/signup'} />
                 </div>
+
             </div>
+
         </div>
     );
 }
