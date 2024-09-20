@@ -1,9 +1,13 @@
+'use client';
+import { useRecoilState } from "recoil";
+import { taskListState } from "@/state/taskState";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Circle, Edit, Trash2 } from "lucide-react";
 
 interface TaskCardProps {
+    id: string;
     title: string;
     description: string;
     status: "TODO" | "IN_PROGRESS" | "DONE";
@@ -12,25 +16,30 @@ interface TaskCardProps {
 }
 
 export default function TaskCard({
+    id,
     title,
     description,
     status,
     priority,
     dueDate,
 }: TaskCardProps) {
+    const [tasks, setTasks] = useRecoilState(taskListState);
+
+    const handleDelete = () => {
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    };
 
     const priorityColors = {
         LOW: "bg-green-500",
         MEDIUM: "bg-yellow-500",
-        HIGH: "bg-red-500"
+        HIGH: "bg-red-500",
     };
 
     const progressColors = {
         TODO: "bg-gray-500",
         IN_PROGRESS: "bg-blue-500",
-        DONE: "bg-green-500"
+        DONE: "bg-green-500",
     };
-
 
     return (
         <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto my-4 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
@@ -61,7 +70,12 @@ export default function TaskCard({
                     <Edit className="h-4 w-4 mr-2" />
                     Edit
                 </Button>
-                <Button variant="outline" size="sm" className="flex items-center">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center"
+                    onClick={handleDelete}
+                >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete
                 </Button>

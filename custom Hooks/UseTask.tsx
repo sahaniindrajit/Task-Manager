@@ -11,10 +11,11 @@ interface Task {
 }
 
 interface UseTaskProps {
+    refresh: boolean;
     status: "TODO" | "IN_PROGRESS" | "DONE";
 }
 
-export default function UseTask({ status }: UseTaskProps) {
+export default function UseTask({ status, refresh }: UseTaskProps) {
     const [tasks, setTasks] = useState<Task[]>([]);
 
     useEffect(() => {
@@ -37,7 +38,7 @@ export default function UseTask({ status }: UseTaskProps) {
         }
 
         fetchTasks();
-    }, []);
+    }, [refresh]);
 
     // Filter tasks based on the status prop
     const filteredTasks = tasks.filter(task => task.status === status);

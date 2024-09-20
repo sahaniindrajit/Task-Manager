@@ -6,7 +6,9 @@ import { CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import axios from "axios";
+import { useRecoilState } from 'recoil';
+import { tasksState, Task } from '@/state/taskAtom';
+import axios from 'axios';
 
 export default function AddTaskCard() {
     const [open, setOpen] = useState(false);
@@ -16,11 +18,13 @@ export default function AddTaskCard() {
     const [priority, setPriority] = useState('');
     const [dueDate, setDueDate] = useState('');
 
+    // Use Recoil state to manage tasks
+    const [tasks, setTasks] = useRecoilState(tasksState);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            // Create the task payload
+            const parsedDueDate = dueDate ? new Date(dueDate).toISOString() : null;
             const taskData = {
                 title,
                 description,
@@ -28,19 +32,29 @@ export default function AddTaskCard() {
                 priority
             };
 
-            // Only include dueDate if it's provided
             if (dueDate) {
                 taskData.dueDate = new Date(dueDate);
             }
 
+
             const response = await axios.post('http://localhost:3000/api/task', taskData);
 
-            console.log('Response:', response.data);
+            const newTask: Task = response.data;
+
+
+            setTasks([...tasks, newTask]);
+
             setOpen(false);
+            setTitle('');
+            setDescription('');
+            setStatus('');
+            setPriority('');
+            setDueDate('');
+            console.log(tasks)
+
         } catch (error) {
             console.error('Error submitting task:', error);
         }
-        setOpen(false);
     };
 
     return (
@@ -51,7 +65,7 @@ export default function AddTaskCard() {
                     Add Task
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-white bg-opacity-90 text-gray-900"> {/* Set background opacity and text color */}
+            <DialogContent className="sm:max-w-[425px] bg-white bg-opacity-90 text-gray-900">
                 <DialogHeader>
                     <DialogTitle>Add New Task</DialogTitle>
                 </DialogHeader>
@@ -59,11 +73,11 @@ export default function AddTaskCard() {
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
                             <label htmlFor="title">Title</label>
-                            <Input id="title" placeholder="Enter task title" onChange={(e) => setTitle(e.target.value)} />
+                            <Input id="title" value={title} placeholder="Enter task title" onChange={(e) => setTitle(e.target.value)} />
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="description">Description</label>
-                            <Textarea id="description" placeholder="Enter task description" onChange={(e) => setDescription(e.target.value)} />
+                            <Textarea id="description" value={description} placeholder="Enter task description" onChange={(e) => setDescription(e.target.value)} />
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="status">Status</label>
@@ -93,7 +107,7 @@ export default function AddTaskCard() {
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="dueDate">Due Date</label>
-                            <Input id="dueDate" type="date" onChange={(e) => setDueDate(e.target.value)} />
+                            <Input id="dueDate" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
                         </div>
                     </div>
                     <CardFooter className="justify-end space-x-2">

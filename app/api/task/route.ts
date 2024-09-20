@@ -41,9 +41,7 @@ export async function POST(req: NextRequest) {
                 userId: userId
             }
         })
-        return NextResponse.json({
-            msg: "task created"
-        });
+        return NextResponse.json(task)
     } catch (err) {
         console.error('Error:', err);
         return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
