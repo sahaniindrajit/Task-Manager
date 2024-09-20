@@ -1,68 +1,82 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useRecoilState } from 'recoil';
 import { tasksState, Task } from '@/state/taskAtom';
-import axios from 'axios';
-export default function AddTaskCard() {
-    const [open, setOpen] = useState(false);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [status, setStatus] = useState('');
-    const [priority, setPriority] = useState('');
-    const [dueDate, setDueDate] = useState('');
+import editTask from '@/actions/editTask';
 
+interface EditTaskCardProps {
+    task: Task;
+    onEdit: (updatedTask: Task) => void; // Updated prop for handling the edit
+}
+
+export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
+    const [open, setOpen] = useState(false);
+    const [title, setTitle] = useState(task.title);
+    const [description, setDescription] = useState(task.description);
+    const [status, setStatus] = useState(task.status);
+    const [priority, setPriority] = useState(task.priority);
+    const [dueDate, setDueDate] = useState(task.dueDate || '');
 
     const [tasks, setTasks] = useRecoilState(tasksState);
+
+    useEffect(() => {
+        // Reset fields when task changes
+        setTitle(task.title);
+        setDescription(task.description);
+        setStatus(task.status);
+        setPriority(task.priority);
+        setDueDate(task.dueDate || '');
+    }, [task]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            // Task data
             const taskData = {
                 title,
                 description,
                 status,
                 priority,
-                ...(dueDate && { dueDate: new Date(dueDate).toISOString() })
+                ...(dueDate && dueDate !== '' ? { dueDate: new Date(dueDate).toISOString() } : {}) // Only include dueDate if it has a value
             };
 
+            // Call the editTask function
+            const response = await editTask(task.id, taskData);
+            if (response.error) {
+                throw new Error(response.error);
+            }
+            const updatedTask = response.task;
 
-            const response = await axios.post('http://localhost:3000/api/task', taskData);
+            // Call the onEdit prop to update the task in the parent component
+            onEdit(updatedTask);
 
-            const newTask: Task = response.data;
+            // Optionally update the local state if needed
+            setTasks((prevTasks) =>
+                prevTasks.map((t) => (t.id === updatedTask.id ? { ...t, ...updatedTask } : t))
+            );
 
-
-            setTasks([...tasks, newTask]);
-
-            setTitle('');
-            setDescription('');
-            setStatus('');
-            setPriority('');
-            setDueDate('');
             setOpen(false);
-
         } catch (error) {
-            console.error('Error submitting task:', error);
+            console.error('Error updating task:', error);
         }
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Task
+                <Button variant="outline" size="sm" className="flex items-center">
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px] bg-white bg-opacity-90 text-gray-900">
                 <DialogHeader>
-                    <DialogTitle>Add New Task</DialogTitle>
+                    <DialogTitle>Edit Task</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 py-4">
@@ -76,7 +90,7 @@ export default function AddTaskCard() {
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="status">Status</label>
-                            <Select onValueChange={(value) => setStatus(value)}>
+                            <Select value={status} onValueChange={(value) => setStatus(value)}>
                                 <SelectTrigger id="status">
                                     <SelectValue placeholder="Select status" />
                                 </SelectTrigger>
@@ -89,7 +103,7 @@ export default function AddTaskCard() {
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="priority">Priority</label>
-                            <Select onValueChange={(value) => setPriority(value)}>
+                            <Select value={priority} onValueChange={(value) => setPriority(value)}>
                                 <SelectTrigger id="priority">
                                     <SelectValue placeholder="Select priority" />
                                 </SelectTrigger>
@@ -110,7 +124,7 @@ export default function AddTaskCard() {
                         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit">Add Task</Button>
+                        <Button type="submit">Update Task</Button>
                     </CardFooter>
                 </form>
             </DialogContent>

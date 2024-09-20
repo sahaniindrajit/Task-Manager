@@ -4,8 +4,9 @@ import { tasksState } from "@/state/taskAtom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Circle, Edit, Trash2 } from "lucide-react";
+import { Circle, Trash2 } from "lucide-react";
 import deleteTask from "@/actions/deleteTask";
+import EditTaskCard from "./editTaskCard";
 
 interface TaskCardProps {
     id: string;
@@ -28,19 +29,20 @@ export default function TaskCard({
 
     const handleDelete = async () => {
         try {
-            // Call the server function to delete the task
             const result = await deleteTask(id);
-
             if (result.error) {
                 throw new Error(result.error);
             }
-
-
             setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
         } catch (error) {
             console.error('Error deleting task:', error);
-
         }
+    };
+
+    const handleEdit = (updatedTask) => {
+        setTasks((prevTasks) =>
+            prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+        );
     };
 
     const priorityColors = {
@@ -80,10 +82,8 @@ export default function TaskCard({
                 </div>
             </CardContent>
             <div className="flex justify-end space-x-2 p-2">
-                <Button variant="outline" size="sm" className="flex items-center">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                </Button>
+                <EditTaskCard task={{ id, title, description, status, priority, dueDate }} onEdit={handleEdit} />
+
                 <Button
                     variant="outline"
                     size="sm"
