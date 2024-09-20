@@ -17,6 +17,7 @@ interface TaskCardProps {
     status: "TODO" | "IN_PROGRESS" | "DONE";
     priority: "LOW" | "MEDIUM" | "HIGH";
     dueDate: string;
+    setDraggedTaskId: (id: string) => void;
 }
 
 export default function TaskCard({
@@ -26,7 +27,8 @@ export default function TaskCard({
     status,
     priority,
     dueDate,
-}: TaskCardProps, setActiveCard) {
+    setDraggedTaskId,
+}: TaskCardProps) {
     const [tasks, setTasks] = useRecoilState(tasksState);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -63,9 +65,13 @@ export default function TaskCard({
         DONE: "bg-green-500",
     };
 
+    const handleDragStart = () => {
+        setDraggedTaskId(id);  // Set the dragged task ID
+    };
+
     return (
         <>
-            <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto my-4 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out" draggable onDragStart={() => setActiveCard(id)} onDragEnd={() => setActiveCard(null)}>
+            <Card className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto my-4 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out" draggable onDragStart={handleDragStart}  >
                 <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
                     <CardTitle className="text-lg font-semibold text-gray-900">{title}</CardTitle>
                     <Badge
