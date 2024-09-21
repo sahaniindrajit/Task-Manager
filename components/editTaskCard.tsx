@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,7 +37,7 @@ export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
         setDueDate(task.dueDate || '');
     }, [task]);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: { preventDefault: () => void; }) => {
         setIsLoading(true);
 
         event.preventDefault();
@@ -139,11 +140,11 @@ export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
                             {isLoading ? (
                                 <div className="flex items-center justify-center">
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Adding...
+                                    Updating...
 
                                 </div>
                             ) : (
-                                "Add Task →"
+                                "Edit Task →"
                             )}
                         </Button>
                     </CardFooter>

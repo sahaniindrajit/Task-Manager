@@ -1,8 +1,7 @@
-'use server'
+'use server';
 
-import gettoken from './verifyToken'
+import gettoken from './verifyToken';
 import prisma from '@/db';
-
 
 export default async function getTask() {
     try {
@@ -13,7 +12,7 @@ export default async function getTask() {
         }
 
         const tasks = await prisma.task.findMany({
-            where: { userId: userId }
+            where: { userId: userId },
         });
 
         return tasks;

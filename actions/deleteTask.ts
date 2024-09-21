@@ -1,9 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import gettoken from './verifyToken';
 import prisma from '@/db';
 
-export default async function deleteTask(taskId) {
+interface Task {
+    id: string;
+    title: string;
+    description: string | null;
+    userId: string;
+    status: "TODO" | "IN_PROGRESS" | "DONE";
+    priority: "LOW" | "MEDIUM" | "HIGH";
+    createdAt: Date;
+    dueDate: Date | null;
+}
+interface ErrorResponse {
+    error: string;
+}
+
+type DeleteTaskResponse = Task | ErrorResponse;
+
+export default async function deleteTask(taskId: string): Promise<DeleteTaskResponse> {
     try {
         const userId = await gettoken();
 
@@ -19,8 +36,8 @@ export default async function deleteTask(taskId) {
         });
 
         return deletedTask;
-    } catch (err) {
+    } catch (err: unknown) {
         console.error('Error deleting task:', err);
-        return { error: err.code === 'P2025' ? 'Task not found.' : 'Failed to delete task.' };
+        return { error: (err as any).code === 'P2025' ? 'Task not found.' : 'Failed to delete task.' };
     }
 }

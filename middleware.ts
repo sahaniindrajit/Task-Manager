@@ -1,16 +1,16 @@
-// pages/dashboard/_middleware.ts
+
 import { NextResponse, NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
     const token = req.cookies.get("access_token");
-    const url = req.url;
+    const url = req.nextUrl;
 
-    if (!token && url.includes('/dashboard')) {
+    if (!token && url.pathname.startsWith('/dashboard')) {
         return NextResponse.redirect(new URL("/signin", req.url));
     }
 
-    if (token && (url === 'http://localhost:3000/signin' || url === 'http://localhost:3000/signup')) {
-        return NextResponse.redirect('http://localhost:3000/dashboard');
+    if (token && (url.pathname === '/signin' || url.pathname === '/signup')) {
+        return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
     return NextResponse.next();

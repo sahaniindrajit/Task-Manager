@@ -23,10 +23,11 @@ export default function AddTaskCard() {
 
     const [tasks, setTasks] = useRecoilState(tasksState);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: { preventDefault: () => void; }) => {
         setIsLoading(true);
 
         event.preventDefault();
+
         try {
             // Task data
             const taskData = {
@@ -34,13 +35,26 @@ export default function AddTaskCard() {
                 description,
                 status,
                 priority,
-                ...(dueDate && { dueDate: new Date(dueDate).toISOString() })
+                ...(dueDate && dueDate !== '' ? { dueDate: new Date(dueDate).toISOString() } : {})
             };
 
 
-            const response = await axios.post('http://localhost:3000/api/task', taskData);
+            const response = await axios.post('/api/task', taskData);
 
-            const newTask: Task = response.data;
+            //for formating date
+            const newTask: Task = {
+                ...response.data,
+                dueDate: response.data.dueDate
+                    ? (() => {
+                        const date = new Date(response.data.dueDate);
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                        const year = date.getFullYear(); // Full year
+                        return `${day}-${month}-${year}`;
+                    })()
+                    : null
+            };
+
 
 
             setTasks([...tasks, newTask]);

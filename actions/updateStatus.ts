@@ -29,6 +29,6 @@ export default async function updateStatus(taskId: string, taskData: TaskData) {
         return updatedTaskStatus;
     } catch (err) {
         console.error('Error updating task:', err);
-        return { error: err.code === 'P2025' ? 'Task not found.' : 'Failed to update task.' };
+        return { error: (err as any).code === 'P2025' ? 'Task not found.' : 'Failed to update task.' };
     }
 }

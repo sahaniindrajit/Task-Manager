@@ -7,7 +7,7 @@ type SigninResponse = {
 
 export default async function Signin(email: string, password: string): Promise<SigninResponse> {
     try {
-        const response = await axios.post('http://localhost:3000/api/user/signin', {
+        const response = await axios.post('/api/user/signin', {
             email,
             password
         }, {

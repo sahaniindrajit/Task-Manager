@@ -1,9 +1,10 @@
+/* eslint-disable no-var */
 import { PrismaClient } from '@prisma/client';
 import { withAccelerate } from '@prisma/extension-accelerate';
 
-// Create the Prisma client with the Accelerate extension
+// Define the extended PrismaClient type with the Accelerate extension
 const createPrismaClient = () => {
-    return new PrismaClient().$extends(withAccelerate());
+    return new PrismaClient().$extends(withAccelerate()) as unknown as PrismaClient;
 };
 
 // Augment the global namespace for TypeScript

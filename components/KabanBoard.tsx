@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useRecoilValue, useRecoilState } from "recoil";
 import { filteredTaskList, tasksState } from "@/state/taskAtom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

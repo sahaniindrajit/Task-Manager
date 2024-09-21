@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
 interface JwtPayload {
-    userId: string;
+    userID: string;
 }
 
 export default async function gettoken() {
@@ -20,7 +20,7 @@ export default async function gettoken() {
             throw new Error('Not Authentication.');
         }
         return decodedToken.userID
-    } catch (error) {
+    } catch {
         throw new Error('Invalid or expired token.');
     }
 }

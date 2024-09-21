@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Building a Task Management Dashboard
+
+# Task Manager App
+
+This project is a task management dashboard built using the Next.js framework with a MongoDB backend and Prisma ORM. The website allows users to create, manage, and delete tasks. It features a Kanban board for visual task organization and a list view for easy task management. The app includes user authentication, drag-and-drop functionality for task prioritization, and responsive UI built using Shadcn components. [Check out the Website](your-deployed-site-url)
+
+## Features
+
+- **User Authentication**: Secure sign-up and login for users.
+- **Task Creation and Management**: Add, edit, and delete tasks.
+- **Kanban Board**: Drag-and-drop tasks between 'To Do', 'In Progress', and 'Done' columns.
+- **List View**: Manage tasks in a simple list format.
+- **Filter & Search**: Easily find tasks based on criteria like status or title.
+- **Optional Due Dates**: Set due dates for tasks or leave them open-ended.
+- **Responsive Design**: Optimized for mobile and desktop users.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js
+- MongoDB
+- Prisma
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/sahaniindrajit/Task-Manager.git
+    cd Task-Manager
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies for both the frontend and backend:
+    ```bash
+    npm install
+    ```
 
-## Learn More
+3. Set up Prisma and your MongoDB connection. Create a `.env` file in the root directory and add the following environment variables:
+    ```
+    DIRECT_DATABASE_URL=your_mongodb_connection_string
+    NEXT_PUBLIC_JWT_PASSWORD=next@taskmanager
+    DATABASE_URL=your_Prisma_accelerate_connection_string
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Apply Prisma migrations to your MongoDB database:
+    ```bash
+    npx prisma migrate deploy
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Start the development server:
+    ```bash
+    npm run dev
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. Open your browser and navigate to `http://localhost:3000` to see the app running.
 
-## Deploy on Vercel
+## Folder Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `components`: Contains reusable UI components such as task cards, list views, and modals.
+- `app`: Next.js pages that handle routing and page rendering.
+- `prisma`: Prisma models and configuration for database schema and migrations.
+- `public`: Static assets like images and icons.
+- `actions`: Helper functions like token verification and API handling.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch: `git checkout -b feature/your-feature-name`.
+3. Make your changes and commit them: `git commit -m 'Add some feature'`.
+4. Push to the branch: `git push origin feature/your-feature-name`.
+5. Open a pull request.

@@ -9,7 +9,8 @@ export async function POST(req: NextRequest) {
     const taskData = TaskSchema.safeParse(body)
     if (!taskData.success) {
         return NextResponse.json({
-            msg: "Invalid data type"
+            msg: "Invalid data type",
+            errors: taskData.error,
         }, { status: 400 });
     }
     let userId: string;

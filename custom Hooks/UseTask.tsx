@@ -1,6 +1,6 @@
 import getTask from "@/actions/getTask";
 import { useEffect } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { tasksState } from "@/state/taskAtom";
 
 interface Task {
@@ -12,18 +12,17 @@ interface Task {
     dueDate: string;
 }
 
-interface UseTaskProps {
-    refresh: boolean;
-    status: "TODO" | "IN_PROGRESS" | "DONE";
-}
+
 
 export default function UseTask() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [tasks, setTasks] = useRecoilState(tasksState); // Using Recoil state instead of local state
 
     useEffect(() => {
         async function fetchTasks() {
             try {
                 const allTasks = await getTask();
+
 
                 const formattedTasks = allTasks.map((task: Task) => ({
                     id: task.id,
@@ -48,6 +47,6 @@ export default function UseTask() {
         }
 
         fetchTasks();
-    }, []);
+    }, [setTasks]);
     return true;
 }
