@@ -94,7 +94,7 @@ export default function TaskCard({
                     </div>
                 </CardContent>
                 <div className="flex justify-end space-x-2 p-2">
-                    <EditTaskCard task={{ id, title, description, status, priority, dueDate }} onEdit={handleEdit} />
+                    <EditTaskCard task={{ id, title, description, status, priority, dueDate }} />
 
                     <Button
                         className="flex items-center"
