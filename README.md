@@ -3,7 +3,7 @@
 
 # Task Manager App
 
-This project is a task management dashboard built using the Next.js framework with a MongoDB backend and Prisma ORM. The website allows users to create, manage, and delete tasks. It features a Kanban board for visual task organization and a list view for easy task management. The app includes user authentication, drag-and-drop functionality for task prioritization, and responsive UI built using Shadcn components. [Check out the Website](your-deployed-site-url)
+This project is a task management dashboard built using the Next.js framework with a MongoDB backend and Prisma ORM. The website allows users to create, manage, and delete tasks. It features a Kanban board for visual task organization and a list view for easy task management. The app includes user authentication, drag-and-drop functionality for task prioritization, and responsive UI built using Shadcn components. [Check out the Website](https://managefiasco.vercel.app/)
 
 ## Features
 

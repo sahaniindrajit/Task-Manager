@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import RecoilProvider from '@/components/RecoilProvider';
+import { Analytics } from "@vercel/analytics/react"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RecoilProvider>{children}</RecoilProvider>
+        <RecoilProvider>
+          {children}
+          <Analytics />
+        </RecoilProvider>
 
       </body>
     </html>
