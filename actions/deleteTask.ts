@@ -12,7 +12,7 @@ interface Task {
     status: "TODO" | "IN_PROGRESS" | "DONE";
     priority: "LOW" | "MEDIUM" | "HIGH";
     createdAt: Date;
-    dueDate: Date;
+    dueDate: string;
 }
 
 type DeleteTaskResponse = Task;
