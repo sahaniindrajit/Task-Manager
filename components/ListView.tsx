@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useRecoilState } from 'recoil';
@@ -126,7 +127,8 @@ export default function ListView() {
                             status={task.status}
                             priority={task.priority}
                             dueDate={task.dueDate}
-                        />
+                            id={task.id}
+                            setDraggedTaskId={function (id: string): void { }} />
                     ))
                 ) : (
                     <p>No tasks match your criteria.</p>

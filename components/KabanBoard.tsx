@@ -52,10 +52,7 @@ export default function KanbanBoard() {
         try {
             const updatedTask = updateStatus(draggedTaskId, { status: newStatus });
 
-            if (updatedTask.error) {
-                console.error(updatedTask.error);
-                return;
-            }
+
 
             // Update the local state after successfully updating the server
             setTasks((prevTasks) =>

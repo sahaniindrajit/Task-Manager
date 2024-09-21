@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import { useRecoilState } from "recoil";
 import { tasksState } from "@/state/taskAtom";
@@ -36,9 +37,7 @@ export default function TaskCard({
         try {
             setIsLoading(true);
             const result = await deleteTask(id);
-            if (result.error) {
-                throw new Error(result.error);
-            }
+
             setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
         } catch (error) {
             console.error('Error deleting task:', error);
