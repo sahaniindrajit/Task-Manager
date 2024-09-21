@@ -12,16 +12,13 @@ import { tasksState, Task } from '@/state/taskAtom';
 import editTask from '@/actions/editTask';
 import { Loader2 } from "lucide-react";
 
-type EditTaskResponse =
-    | { task: Task }
-    | { error: string };
 
 interface EditTaskCardProps {
     task: Task;
-    onEdit: (updatedTask: Task) => void;
+
 }
 
-export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
+export default function EditTaskCard({ task }: EditTaskCardProps) {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
@@ -54,22 +51,12 @@ export default function EditTaskCard({ task, onEdit }: EditTaskCardProps) {
                 ...(dueDate ? { dueDate: new Date(dueDate).toISOString() } : {}),
             };
 
-            const response: EditTaskResponse = await editTask(task.id, taskData);
+            await editTask(task.id, taskData);
 
-            if ('task' in response) {
-                const updatedTask = response.task;
-                onEdit(updatedTask);
 
-                setTasks((prevTasks) =>
-                    prevTasks.map((t) => (t.id === updatedTask.id ? { ...t, ...updatedTask } : t))
-                );
 
-                setOpen(false);
-            } else {
-                console.error('Error updating task:', response.error);
-            }
-        } catch (error) {
-            console.error('Error updating task:', error);
+            setOpen(false);
+
         } finally {
             setIsLoading(false);
         }
