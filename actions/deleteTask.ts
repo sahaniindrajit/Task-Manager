@@ -12,7 +12,7 @@ interface Task {
     status: "TODO" | "IN_PROGRESS" | "DONE";
     priority: "LOW" | "MEDIUM" | "HIGH";
     createdAt: Date;
-    dueDate: Date | null;
+    dueDate: Date;
 }
 interface ErrorResponse {
     error: string;
