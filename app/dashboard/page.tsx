@@ -16,19 +16,6 @@ export default function Dashboard() {
     const router = useRouter();
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-    const [refreshColumn, setRefreshColumn] = useState({
-        TODO: false,
-        IN_PROGRESS: false,
-        DONE: false,
-    });
-
-    const handleTaskAdded = (status) => {
-        setRefreshColumn((prev) => ({
-            ...prev,
-            [status]: !prev[status],  // Toggle to trigger refresh
-        }));
-    };
-
     return (
         <div className="flex h-screen bg-gray-100">
             <aside className={`${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0`}>
@@ -81,13 +68,13 @@ export default function Dashboard() {
                         {view === "kanban" ? "Kanban Board" : "List View"}
                     </h2>
                     <div className="flex items-center space-x-2">
-                        <AddTaskCard onTaskAdded={handleTaskAdded} />
+                        <AddTaskCard />
                     </div>
                 </div>
 
                 <ScrollArea className="h-[calc(100vh-4rem)] p-4">
                     {view === "kanban" ? (
-                        <KanbanBoard refreshColumn={refreshColumn} />
+                        <KanbanBoard />
                     ) : (
                         <ListView />
                     )}
